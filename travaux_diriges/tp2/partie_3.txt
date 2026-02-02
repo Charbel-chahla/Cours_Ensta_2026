@@ -1,0 +1,47 @@
+On considère qu’Alice a parallélisé 90 % de son programme, ce qui signifie que
+la fraction parallélisable est P = 0.9 et que la fraction séquentielle
+incompressible est 1 − P = 0.1.
+
+D’après la loi d’Amdahl, l’accélération obtenue avec n nœuds de calcul est :
+S(n) = 1 / ( (1 − P) + P / n )
+
+Lorsque le nombre de nœuds devient très grand (n >> 1), le terme P / n tend vers
+zéro. L’accélération maximale théorique vaut alors :
+S_max = 1 / (1 − P) = 1 / 0.1 = 10
+
+Ainsi, même avec un nombre infini de processeurs, l’accélération du programme
+ne pourra jamais dépasser 10 à cause de la partie séquentielle du code.
+
+Pour estimer un nombre raisonnable de nœuds, on peut calculer le speedup pour
+quelques valeurs :
+- n = 4  : S(4) ≈ 1 / (0.1 + 0.9 / 4) ≈ 3.1
+- n = 8  : S(8) ≈ 1 / (0.1 + 0.9 / 8) ≈ 4.7
+- n = 16 : S(16) ≈ 1 / (0.1 + 0.9 / 16) ≈ 6.4
+
+On observe que les gains deviennent de plus en plus faibles lorsque n augmente.
+Il est donc raisonnable de limiter le nombre de nœuds à environ 8 (voire 16
+au maximum) afin d’éviter le gaspillage de ressources CPU.
+
+En pratique, Alice observe une accélération maximale de 4. Cette valeur,
+inférieure à la borne théorique prédite par la loi d’Amdahl, s’explique par les
+surcoûts réels liés au calcul parallèle : communications entre processus,
+synchronisations, déséquilibre de charge et overhead logiciel.
+
+Si Alice double la quantité de données à traiter et suppose une complexité
+linéaire de la partie parallèle, la loi de Gustafson permet d’estimer
+l’accélération obtenue. On suppose que le temps séquentiel reste constant
+(0.1) tandis que le temps parallèle double (1.8). Le nouveau temps total est :
+T = 0.1 + 1.8 = 1.9
+
+La nouvelle fraction séquentielle relative est donc :
+alpha = 0.1 / 1.9 ≈ 0.053
+
+La loi de Gustafson s’écrit :
+S_G(n) = n − alpha * (n − 1)
+
+Avec n = 4, on obtient :
+S_G(4) = 4 − 0.053 * 3 ≈ 3.84
+
+Ainsi, en augmentant la taille du problème, Alice peut espérer une accélération
+proche de 4, ce qui montre que le parallélisme devient plus efficace lorsque
+la charge de calcul parallèle domine la partie séquentielle.
